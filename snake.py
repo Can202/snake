@@ -14,6 +14,15 @@ class colors():
     RED = (255, 0, 0)
 WINDOW_SIZE = {"x":720, "y":480}
 COLOR = colors()
+class Label():
+    pygame.font.init()
+    myfont = pygame.font.SysFont("None", 20)
+    label = myfont.render("text here", 1, COLOR.WHITE)
+    def text(self, text : str):
+        self.label = self.myfont.render(text, 1, (255,255,255))
+    def print(self, root, position=[0,0]):
+        root.blit(self.label, (position[0], position[1]))
+
 class Apple():
     X = 0
     Y = 1
@@ -68,33 +77,39 @@ class Snake():
 
 pygame.init()
 CLOCK = pygame.time.Clock()
+Score = 0
 def main():
     
     root = pygame.display.set_mode((WINDOW_SIZE["x"], WINDOW_SIZE["y"]))
     pygame.display.set_caption("snake")
     snake = Snake()
     apple = Apple()
+    score_label = Label()
     
     while True:
         
         clear(root)
-        snake, apple = mod(snake, apple)
-        draw(root, snake, apple)
+        snake, apple, score_label = mod(snake, apple, score_label)
+        draw(root, snake, apple, score_label)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:
                 pygame.quit()
                 sys.exit()
         CLOCK.tick(FPS)
-def mod(snake, apple):
+def mod(snake, apple, score_label):
+    global Score
     snake.process()
     if apple.collision_with(snake):
         apple.random()
-    return snake, apple
+        Score += 1
+    score_label.text(str(Score))
+    return snake, apple, score_label
 def clear(root):
     root.fill(COLOR.BLACK)
-def draw(root, snake, apple):
+def draw(root, snake, apple, score_label):
     apple.draw(root, apple.position[snake.X], apple.position[snake.Y])
     snake.draw(root, snake.position[snake.X], snake.position[snake.Y])
+    score_label.print(root, [15,15])
 if __name__ == "__main__":
     main()
