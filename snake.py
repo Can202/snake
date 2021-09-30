@@ -14,25 +14,19 @@ class colors():
     RED = (255, 0, 0)
 WINDOW_SIZE = {"x":720, "y":480}
 COLOR = colors()
-class Label():
-    pygame.font.init()
-    myfont = pygame.font.SysFont("None", 20)
-    label = myfont.render("text here", 1, COLOR.WHITE)
-    def text(self, text : str):
-        self.label = self.myfont.render(text, 1, (255,255,255))
-    def print(self, root, position=[0,0]):
-        root.blit(self.label, (position[0], position[1]))
 
-class Apple():
-    X = 0
-    Y = 1
-    position = [random.randrange(WINDOW_SIZE["x"]),random.randrange(WINDOW_SIZE["x"])]
-    width = PRINCIPALNUMBER
-    height = PRINCIPALNUMBER
+class Object():
+    def __init__(self):
+        self.X = 0
+        self.Y = 1
+        self.width = PRINCIPALNUMBER
+        self.height = PRINCIPALNUMBER
+        self.color = COLOR.WHITE
+        self.start()
+    def start(self):
+        pass
     def draw(self, root, position_x, position_y):
-        pygame.draw.rect(root, COLOR.RED, (position_x, position_y, self.width, self.height))
-    def random(self):
-        self.position = [random.randrange(WINDOW_SIZE["x"]),random.randrange(WINDOW_SIZE["y"])]
+        pygame.draw.rect(root, self.color, (position_x, position_y, self.width, self.height))
     def collision_with(self, object):
         if object.position[self.Y] >= self.position[self.Y] and object.position[self.Y] <= self.position[self.Y] + self.height and object.position[self.X] >= self.position[self.X] and object.position[self.X] <= self.position[self.X] + self.width:
             return True
@@ -45,17 +39,29 @@ class Apple():
         else:
             return False
 
-class Snake():
-    X = 0
-    Y = 1
-    position = [int(WINDOW_SIZE["x"]/2),int(WINDOW_SIZE["y"]/2)]
-    direction = [0,0]
-    length = 1
-    width = PRINCIPALNUMBER
-    height = PRINCIPALNUMBER
-    velocity = width
-    def draw(self, root, position_x, position_y):
-        pygame.draw.rect(root, COLOR.GREEN, (position_x, position_y, self.width, self.height))
+class Label():
+    pygame.font.init()
+    myfont = pygame.font.SysFont("None", 20)
+    label = myfont.render("text here", 1, COLOR.WHITE)
+    def text(self, text : str):
+        self.label = self.myfont.render(text, 1, (255,255,255))
+    def print(self, root, position=[0,0]):
+        root.blit(self.label, (position[0], position[1]))
+
+class Apple(Object):
+    def start(self):
+        self.position = [random.randrange(WINDOW_SIZE["x"]),random.randrange(WINDOW_SIZE["y"])]
+        self.color = COLOR.RED
+    def random(self):
+        self.position = [random.randrange(WINDOW_SIZE["x"]),random.randrange(WINDOW_SIZE["y"])]
+
+class Snake(Object):
+    def start(self):
+        self.color = COLOR.GREEN
+        self.position = [int(WINDOW_SIZE["x"]/2),int(WINDOW_SIZE["y"]/2)]
+        self.direction = [0,0]
+        self.length = 1
+        self.velocity = self.width
     def process(self):
         pressed = pygame.key.get_pressed()
         if (pressed[pygame.locals.K_RIGHT] or pressed[pygame.locals.K_d]) :
