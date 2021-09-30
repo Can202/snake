@@ -12,7 +12,7 @@ class colors():
     WHITE = (255,255,255)
     GREEN = (0,255, 0)
     RED = (255, 0, 0)
-WINDOW_SIZE = {"x":720, "y":480}
+WindowSize = {"x":720, "y":480}
 COLOR = colors()
 
 class Object():
@@ -50,24 +50,24 @@ class Label():
 
 class Apple(Object):
     def start(self):
-        self.position = [random.randrange(WINDOW_SIZE["x"]),random.randrange(WINDOW_SIZE["y"])]
+        self.position = [random.randrange(WindowSize["x"]),random.randrange(WindowSize["y"])]
         self.color = COLOR.RED
     def random(self):
-        self.position = [random.randrange(WINDOW_SIZE["x"]),random.randrange(WINDOW_SIZE["y"])]
+        self.position = [random.randrange(WindowSize["x"]),random.randrange(WindowSize["y"])]
 
 class Snake(Object):
     def start(self):
         self.color = COLOR.GREEN
-        self.position = [int(WINDOW_SIZE["x"]/2),int(WINDOW_SIZE["y"]/2)]
+        self.position = [int(WindowSize["x"]/2),int(WindowSize["y"]/2)]
         self.direction = [0,0]
         self.length = 1
         self.velocity = self.width
     def process(self):
         pressed = pygame.key.get_pressed()
-        if (pressed[pygame.locals.K_RIGHT] or pressed[pygame.locals.K_d]) :
+        if (pressed[pygame.locals.K_RIGHT] or pressed[pygame.locals.K_d]) and self.position[self.X] < WindowSize["x"] - self.width:
             self.direction[self.X] = 1
             self.direction[self.Y] = 0
-        elif (pressed[pygame.locals.K_LEFT] or pressed[pygame.locals.K_a]) :
+        elif (pressed[pygame.locals.K_LEFT] or pressed[pygame.locals.K_a]) and self.position[self.X] > 0:
             self.direction[self.X] = -1
             self.direction[self.Y] = 0
         elif (pressed[pygame.locals.K_UP] or pressed[pygame.locals.K_w]) :
@@ -76,6 +76,14 @@ class Snake(Object):
         elif (pressed[pygame.locals.K_DOWN] or pressed[pygame.locals.K_s]) :
             self.direction[self.Y] = 1
             self.direction[self.X] = 0
+        if self.direction[self.X] == 1 and self.position[self.X] >= WindowSize["x"] - self.width:
+            self.direction[self.X] = 0
+        elif self.direction[self.X] == -1 and self.position[self.X] <= 0:
+            self.direction[self.X] = 0
+        if self.direction[self.Y] == 1 and self.position[self.Y] >= WindowSize["y"] - self.height:
+            self.direction[self.Y] = 0
+        elif self.direction[self.Y] == -1 and self.position[self.Y] <= 0:
+            self.direction[self.Y] = 0
         self.position[self.X] += self.velocity * self.direction[self.X]
         self.position[self.Y] += self.velocity * self.direction[self.Y]
 
@@ -86,14 +94,13 @@ CLOCK = pygame.time.Clock()
 Score = 0
 def main():
     
-    root = pygame.display.set_mode((WINDOW_SIZE["x"], WINDOW_SIZE["y"]))
+    root = pygame.display.set_mode((WindowSize["x"], WindowSize["y"]))
     pygame.display.set_caption("snake")
     snake = Snake()
     apple = Apple()
     score_label = Label()
     
     while True:
-        
         clear(root)
         snake, apple, score_label = mod(snake, apple, score_label)
         draw(root, snake, apple, score_label)
