@@ -1,6 +1,5 @@
 import pygame
 import sys
-from pygame import rect
 import pygame.locals
 import random
 
