@@ -40,7 +40,7 @@ class Object():
 
 class Label():
     pygame.font.init()
-    myfont = pygame.font.SysFont("None", 20)
+    myfont = pygame.font.SysFont("Arial", 20)
     label = myfont.render("text here", 1, COLOR.WHITE)
     def text(self, text : str):
         self.label = self.myfont.render(text, 1, (255,255,255))
